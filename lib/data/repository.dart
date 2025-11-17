@@ -5,26 +5,47 @@ import 'package:herome/data/model/superhero_response.dart';
 import 'package:http/http.dart' as http;
 
 class Repository {
-  Future<SuperheroResponse?> fetchSuperHero(String name) async {
-    final apiUrl = 'https://superheroapi.com/api/f21bbed3e10a6c9851b4ea07106e5fff/search/$name';
+  // API GitHub akabab/superhero-api - retourne tous les héros
+  static const String githubApiUrl =
+      'https://raw.githubusercontent.com/akabab/superhero-api/master/api/all.json';
 
-    // Sur le web, beaucoup d'APIs bloquent les requêtes CORS. Utiliser un proxy public
-    // pour le développement afin d'éviter l'erreur "Failed to fetch" dans le navigateur.
-    // Remarque: pour la production, héberger un simple proxy côté serveur.
+  Future<SuperheroResponse?> fetchSuperHero(String name) async {
     Uri requestUri;
+
+    // Sur le web, utiliser un proxy CORS pour éviter les blocages
     if (kIsWeb) {
-      final proxy = 'https://api.allorigins.win/raw?url=${Uri.encodeComponent(apiUrl)}';
+      final proxy = 'https://api.allorigins.win/raw?url=${Uri.encodeComponent(githubApiUrl)}';
       requestUri = Uri.parse(proxy);
     } else {
-      requestUri = Uri.parse(apiUrl);
+      requestUri = Uri.parse(githubApiUrl);
     }
 
-    final response = await http.get(requestUri);
+    try {
+      final response = await http.get(requestUri).timeout(const Duration(seconds: 10));
 
-    if (response.statusCode == 200) {
-      final decodeJson = jsonDecode(response.body);
-      return SuperheroResponse.fromJson(decodeJson);
-    } else {
+      if (response.statusCode == 200) {
+        final decodeJson = jsonDecode(response.body);
+
+        // L'API retourne directement une liste de héros
+        final allHeroes = decodeJson is List ? decodeJson : decodeJson['results'] ?? [];
+
+        // Filtrer les héros par nom (case-insensitive)
+        final filtered = allHeroes.where((hero) {
+          final heroName = (hero['name'] ?? '').toString().toLowerCase();
+          return heroName.contains(name.toLowerCase());
+        }).toList();
+
+        // Formater la réponse au format attendu par SuperheroResponse
+        final formattedResponse = {
+          'response': 'success',
+          'results': filtered,
+        };
+
+        return SuperheroResponse.fromJson(formattedResponse);
+      } else {
+        return null;
+      }
+    } catch (e) {
       return null;
     }
   }

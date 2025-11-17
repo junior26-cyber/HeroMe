@@ -14,16 +14,42 @@ class SuperheroDetailResponse {
   });
 
   factory SuperheroDetailResponse.fromJson(Map<String, dynamic> json) {
-    // Récupération sécurisée de l'image
-    final imageUrl = json["image"]?["url"] ?? "";
+    // Support pour les deux formats d'API :
+    // 1. superheroapi.com : { image: { url: "..." }, biography: { "full-name": "..." } }
+    // 2. akabab/superhero-api : { images: { md: "..." }, biography: "..." }
+
+    // Récupération sécurisée de l'image (format superheroapi.com)
+    var imageUrl = json["image"]?["url"]?.toString() ?? "";
+
+    // Fallback: format akabab (images.md)
+    if (imageUrl.isEmpty) {
+      imageUrl = json["images"]?["md"]?.toString() ?? "";
+    }
+
+    // Fallback: format akabab (thumbnail)
+    if (imageUrl.isEmpty) {
+      imageUrl = json["images"]?["sm"]?.toString() ?? "";
+    }
+
+    // Récupération du nom réel
+    var realName = json["biography"]?["full-name"]?.toString() ?? "";
+
+    // Fallback: format akabab
+    if (realName.isEmpty || realName == "N/A") {
+      realName = json["biography"]?.toString() ?? "N/A";
+      // Extraire seulement le texte pertinent si c'est une description
+      if (realName.contains(" is ")) {
+        realName = realName.split(" is ")[0];
+      }
+    }
 
     return SuperheroDetailResponse(
-      id: json["id"]?.toString() ?? "",
+      id: (json["id"] ?? json["slug"] ?? "")?.toString() ?? "",
       name: json["name"]?.toString() ?? "",
       url: imageUrl,
-      realName: json["biography"]?["full-name"]?.toString() ?? "N/A",
+      realName: realName.isEmpty ? "N/A" : realName,
       powerStatsResponse:
-          PowerStatsResponse.fromJson(json["powerstats"] ?? {}),
+          PowerStatsResponse.fromJson(json["powerstats"] ?? json["stats"] ?? {}),
     );
   }
 }
@@ -46,13 +72,17 @@ class PowerStatsResponse {
   });
 
   factory PowerStatsResponse.fromJson(Map<String, dynamic> json) {
+    // Support pour les deux formats :
+    // superheroapi.com : { intelligence: "94", strength: "100", ... }
+    // akabab : { intelligence: 94, strength: 100, ... } (nombres, pas chaînes)
+    
     return PowerStatsResponse(
-      intelligence: json["intelligence"]?.toString() ?? "0",
-      strength: json["strength"]?.toString() ?? "0",
-      speed: json["speed"]?.toString() ?? "0",
-      durability: json["durability"]?.toString() ?? "0",
-      power: json["power"]?.toString() ?? "0",
-      combat: json["combat"]?.toString() ?? "0",
+      intelligence: (json["intelligence"] ?? 0).toString(),
+      strength: (json["strength"] ?? 0).toString(),
+      speed: (json["speed"] ?? 0).toString(),
+      durability: (json["durability"] ?? 0).toString(),
+      power: (json["power"] ?? 0).toString(),
+      combat: (json["combat"] ?? 0).toString(),
     );
   }
 }
