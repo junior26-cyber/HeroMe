@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:herome/screens/splash_screen.dart';
+import 'package:herome/theme_service.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -10,11 +11,31 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'HeroMe',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(useMaterial3: true, colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo)),
-      home: const SplashScreen(),
+    final lightScheme = ColorScheme.fromSeed(seedColor: const Color(0xFF4F46E5), brightness: Brightness.light);
+    final darkScheme = ColorScheme.fromSeed(seedColor: const Color(0xFF8B84FF), brightness: Brightness.dark);
+
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: themeNotifier,
+      builder: (context, mode, _) {
+        return MaterialApp(
+          title: 'HeroMe',
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData.from(colorScheme: lightScheme).copyWith(
+            useMaterial3: true,
+            appBarTheme: const AppBarTheme(centerTitle: true, elevation: 0),
+            elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: lightScheme.primary,
+                foregroundColor: lightScheme.onPrimary,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              ),
+            ),
+          ),
+          darkTheme: ThemeData.from(colorScheme: darkScheme).copyWith(useMaterial3: true),
+          themeMode: mode,
+          home: const SplashScreen(),
+        );
+      },
     );
   }
 }

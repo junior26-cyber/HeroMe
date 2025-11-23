@@ -7,6 +7,8 @@ import 'package:page_transition/page_transition.dart';
 import 'package:herome/data/repository.dart';
 import 'package:herome/data/model/superhero_detail_response.dart';
 import 'package:herome/screens/superhero_detail_screen.dart';
+import 'package:herome/theme_service.dart';
+import 'package:flutter/material.dart' show Icon, Icons;
 
 class SuperheroSearchScreen extends StatefulWidget {
   const SuperheroSearchScreen({super.key});
@@ -55,6 +57,20 @@ class _SuperheroSearchScreenState extends State<SuperheroSearchScreen> with Sing
         title: const Text('HeroMe'),
         centerTitle: true,
         elevation: 0,
+        actions: [
+          ValueListenableBuilder<ThemeMode>(
+            valueListenable: themeNotifier,
+            builder: (_, mode, __) {
+              return IconButton(
+                icon: Icon(mode == ThemeMode.dark ? Icons.light_mode : Icons.dark_mode),
+                onPressed: () {
+                  themeNotifier.value =
+                      (themeNotifier.value == ThemeMode.dark) ? ThemeMode.light : ThemeMode.dark;
+                },
+              );
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(12),
