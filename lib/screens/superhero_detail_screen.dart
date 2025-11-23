@@ -1,192 +1,109 @@
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 import 'package:herome/data/model/superhero_detail_response.dart';
 
 class SuperheroDetailScreen extends StatelessWidget {
-  final SuperheroDetailResponse superHero;
+  final SuperheroDetailResponse hero;
+  const SuperheroDetailScreen({super.key, required this.hero});
 
-  const SuperheroDetailScreen({super.key, required this.superHero});
-
-  @override
-  Widget build(BuildContext context) {
-    double safeParse(String value) {
-      final parsed = double.tryParse(value);
-      return parsed ?? 0.0;
-    }
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(superHero.name),
-        centerTitle: true,
-        elevation: 0,
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Colors.blue.shade700, Colors.purple.shade600],
+  Widget _statLine(String label, int value, Color color) {
+    final percent = (value.clamp(0, 100)) / 100;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        children: [
+          SizedBox(width: 110, child: Text(label)),
+          Expanded(
+            child: LinearPercentIndicator(
+              lineHeight: 12,
+              percent: percent,
+              progressColor: color,
+              backgroundColor: color.withAlpha((0.2 * 255).round()),
             ),
           ),
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            //  IMAGE DU HÉROS 
-            Hero(
-              tag: superHero.id,
-              child: superHero.url.isNotEmpty
-                  ? Image.network(
-                      superHero.url,
-                      height: 300,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) return child;
-                        return Container(
-                          height: 300,
-                          width: double.infinity,
-                          color: Colors.grey[300],
-                          child: const Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        );
-                      },
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          height: 300,
-                          width: double.infinity,
-                          color: Colors.grey[300],
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.broken_image,
-                                  size: 80, color: Colors.grey.shade400),
-                              const SizedBox(height: 8),
-                              const Text("Image non disponible",
-                                  style: TextStyle(color: Colors.grey)),
-                            ],
-                          ),
-                        );
-                      },
-                    )
-                  : Container(
-                      height: 300,
-                      width: double.infinity,
-                      color: Colors.grey[300],
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.broken_image,
-                              size: 80, color: Colors.grey.shade400),
-                          const SizedBox(height: 8),
-                          const Text("Image non disponible",
-                              style: TextStyle(color: Colors.grey)),
-                        ],
-                      ),
-                    ),
-            ),
-
-            //  DETAILS DU HÉROS 
-
-            Container(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    superHero.name,
-                    style: const TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    superHero.realName,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey.shade600,
-                      fontStyle: FontStyle.italic,
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-
-                  Text(
-                    "Capacités",
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blue.shade700,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-
-                  _buildStatBar(
-                      "Puissance",
-                      safeParse(superHero.powerStatsResponse.power),
-                      Colors.red),
-                  const SizedBox(height: 12),
-                  _buildStatBar(
-                      "Intelligence",
-                      safeParse(superHero.powerStatsResponse.intelligence),
-                      Colors.blue),
-                  const SizedBox(height: 12),
-                  _buildStatBar(
-                      "Force",
-                      safeParse(superHero.powerStatsResponse.strength),
-                      Colors.orange),
-                  const SizedBox(height: 12),
-                  _buildStatBar(
-                      "Vitesse",
-                      safeParse(superHero.powerStatsResponse.speed),
-                      Colors.green),
-                  const SizedBox(height: 12),
-                  _buildStatBar(
-                      "Durabilité",
-                      safeParse(superHero.powerStatsResponse.durability),
-                      Colors.purple),
-                  const SizedBox(height: 12),
-                  _buildStatBar(
-                      "Combat",
-                      safeParse(superHero.powerStatsResponse.combat),
-                      Colors.indigo),
-                ],
-              ),
-            ),
-          ],
-        ),
+          const SizedBox(width: 8),
+          Text('$value'),
+        ],
       ),
     );
   }
 
-  // ----------- BARRE DE STATISTIQUES -----------
-
-  Widget _buildStatBar(String label, double value, Color color) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Scaffold(
+      appBar: AppBar(title: Text(hero.name ?? 'Détail')),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(label, style: const TextStyle(fontWeight: FontWeight.w500)),
-            Text(
-              value.toInt().toString(),
-              style: TextStyle(fontWeight: FontWeight.bold, color: color),
+            CachedNetworkImage(
+              imageUrl: hero.imageUrl ?? '',
+              height: 260,
+              width: double.infinity,
+              fit: BoxFit.cover,
+              placeholder: (_, __) => const SizedBox(height: 260, child: Center(child: CircularProgressIndicator())),
+              errorWidget: (_, __, ___) => SizedBox(
+                height: 260,
+                width: double.infinity,
+                child: Image.asset('assets/default_hero.png', fit: BoxFit.cover),
+              ),
             ),
+            const SizedBox(height: 12),
+            AutoSizeText(hero.name ?? '', style: theme.textTheme.headlineSmall),
+            const SizedBox(height: 12),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  children: [
+                    _statLine('Intelligence', hero.intelligence ?? 0, Colors.blue),
+                    _statLine('Force', hero.strength ?? 0, Colors.red),
+                    _statLine('Vitesse', hero.speed ?? 0, Colors.green),
+                    _statLine('Durabilité', hero.durability ?? 0, Colors.purple),
+                    _statLine('Pouvoir', hero.power ?? 0, Colors.orange),
+                    _statLine('Combat', hero.combat ?? 0, Colors.indigo),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            ExpandablePanel(
+              header: const Text('Biographie', style: TextStyle(fontWeight: FontWeight.bold)),
+              collapsed: Text(hero.fullName ?? '', maxLines: 2, overflow: TextOverflow.ellipsis),
+              expanded: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Nom complet: ${hero.fullName ?? 'N/A'}'),
+                  Text('Alias: ${(hero.aliases ?? []).join(', ')}'),
+                  Text('Lieu de naissance: ${hero.placeOfBirth ?? 'N/A'}'),
+                  Text('Taille: ${(hero.height ?? []).join(', ')}'),
+                  Text('Poids: ${(hero.weight ?? []).join(', ')}'),
+                  Text('Yeux: ${hero.eyeColor ?? 'N/A'}'),
+                  Text('Cheveux: ${hero.hairColor ?? 'N/A'}'),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+            ExpandablePanel(
+              header: const Text('Connexions', style: TextStyle(fontWeight: FontWeight.bold)),
+              collapsed: Text(hero.groupAffiliation ?? '', maxLines: 2, overflow: TextOverflow.ellipsis),
+              expanded: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('Affiliations: ${hero.groupAffiliation ?? 'N/A'}'),
+                  Text('Relatifs: ${hero.relatives ?? 'N/A'}'),
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
           ],
         ),
-        const SizedBox(height: 6),
-        ClipRRect(
-          borderRadius: BorderRadius.circular(8),
-          child: LinearProgressIndicator(
-            value: value / 100,
-            minHeight: 8,
-            backgroundColor: Colors.grey.shade200,
-            valueColor: AlwaysStoppedAnimation<Color>(color),
-          ),
-        ),
-        const SizedBox(height: 12),
-      ],
+      ),
     );
   }
 }

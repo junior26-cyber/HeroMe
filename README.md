@@ -1,4 +1,4 @@
-# 🦸 HeroMe - Application Flutter de Recherche de Superhéros
+# HeroMe - Application Flutter de Recherche de Superhéros
 
 Une application Flutter moderne et élégante pour découvrir et explorer des superhéros du monde entier. Recherchez vos héros préférés, consultez leurs statistiques de combat détaillées et admirez leurs images en haute définition.
 
@@ -8,14 +8,14 @@ Une application Flutter moderne et élégante pour découvrir et explorer des su
 
 ---
 
-## ✨ Fonctionnalités
+##  Fonctionnalités
 
-### 🔍 Recherche Intelligente
+###  Recherche Intelligente
 - Recherche en temps réel de superhéros par nom
 - Résultats instantanés avec affichage en cartes élégantes
 - États vides et d'erreur bien gérés avec icônes
 
-### 📊 Statistiques Détaillées
+###  Statistiques Détaillées
 Visualisez 6 statistiques de combat avec barres colorées :
 - **Puissance** (Rouge)
 - **Intelligence** (Bleu)
@@ -24,20 +24,20 @@ Visualisez 6 statistiques de combat avec barres colorées :
 - **Durabilité** (Violet)
 - **Combat** (Indigo)
 
-### 🎨 Design Moderne
+###  Design Moderne
 - Gradient AppBar bleu → violet
 - Cartes avec animations Hero
 - Interface intuitive et fluide
 - Totalement en français
 
-### 🌐 Multi-plateforme
-- ✅ Android (APK)
-- ✅ iOS (IPA)
-- ✅ Web (Chrome)
+###  Multi-plateforme
+-  Android (APK)
+-  iOS (IPA)
+-  Web (Chrome)
 
 ---
 
-## 🛠️ Installation & Utilisation
+##  Installation & Utilisation
 
 ### Prérequis
 - Flutter 3.5.1+
@@ -79,7 +79,7 @@ L'APK sera disponible à : `build/app/outputs/flutter-apk/app-release.apk`
 
 ---
 
-## 📁 Structure du Projet
+## Structure du Projet
 
 ```
 lib/
@@ -144,7 +144,7 @@ GET https://superheroapi.com/api/{API_KEY}/search/{superhero_name}
 
 ---
 
-## 🌐 Support Web
+##  Support Web
 
 Pour éviter les erreurs **CORS** sur le web, l'application utilise un proxy public :
 - **Proxy :** `api.allorigins.win`
@@ -152,7 +152,7 @@ Pour éviter les erreurs **CORS** sur le web, l'application utilise un proxy pub
 
 ---
 
-## 🎯 Héros à Tester
+##  Héros à Tester
 
 Essayez ces noms pour voir l'app en action :
 - Superman
@@ -165,7 +165,7 @@ Essayez ces noms pour voir l'app en action :
 
 ---
 
-## 📸 Captures d'Écran
+## Captures d'Écran
 
 | Recherche | Détails |
 |-----------|---------|
@@ -173,7 +173,7 @@ Essayez ces noms pour voir l'app en action :
 
 ---
 
-## 🎨 Customization
+##  Customization
 
 ### Changer la couleur du gradient
 Modifiez dans `superhero_search_screen.dart` et `superhero_detail_screen.dart` :
@@ -191,7 +191,7 @@ flutter pub run flutter_launcher_icons:main
 
 ---
 
-## 🐛 Troubleshooting
+##  Troubleshooting
 
 ### Les images ne s'affichent pas ?
 - Vérifiez votre connexion Internet
@@ -211,7 +211,7 @@ flutter build apk --release
 
 ---
 
-## 📱 Distribuer l'Appli
+##  Distribuer l'Appli
 
 ### Android
 ```bash
@@ -229,13 +229,13 @@ flutter build ios --release
 
 ---
 
-## 📄 Licence
+##  Licence
 
 MIT License - Libre d'utilisation
 
 ---
 
-## 🤝 Contribuer
+## Contribuer
 
 Les contributions sont les bienvenues ! 
 1. Fork le projet
@@ -246,10 +246,10 @@ Les contributions sont les bienvenues !
 
 ---
 
-## 📧 Contact
 
-Des questions ? Ouvrez une [issue](https://github.com/votre-username/herome/issues)
+
+
 
 ---
 
-**Fait avec ❤️ en Flutter**
+

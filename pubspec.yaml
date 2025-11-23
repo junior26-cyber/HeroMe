@@ -1,29 +1,30 @@
 name: herome
-description: "Une application pour chercher et découvrir des superhéros."
-publish_to: 'none'
-version: 0.1.0
+description: HeroMe - recherche de super-héros
+publish_to: "none"
 
 environment:
-  sdk: ^3.5.1
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
   http: ^1.4.0
+  cached_network_image: ^3.2.3
+  auto_size_text: ^3.0.0
+  animate_do: ^2.1.0
+  percent_indicator: ^4.2.2
+  swipe_cards: ^2.0.0+1
+  expandable: ^5.0.1
+  page_transition: ^2.0.9
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0
+  flutter_lints: ^2.0.0
   flutter_launcher_icons: ^0.10.0
 
 flutter:
   uses-material-design: true
-
-# Configuration for flutter_launcher_icons
-flutter_icons:
-  android: true
-  ios: true
-  image_path: "assets/icon.png"
-  adaptive_icon_background: "#ffffff"
-  adaptive_icon_foreground: "assets/icon.png"
+  assets:
+    - assets/icon.png
+    - assets/default_hero.png
