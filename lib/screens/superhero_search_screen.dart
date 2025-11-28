@@ -8,7 +8,6 @@ import 'package:herome/data/repository.dart';
 import 'package:herome/data/model/superhero_detail_response.dart';
 import 'package:herome/screens/superhero_detail_screen.dart';
 import 'package:herome/theme_service.dart';
-import 'package:flutter/material.dart' show Icon, Icons;
 
 class SuperheroSearchScreen extends StatefulWidget {
   const SuperheroSearchScreen({super.key});
@@ -77,26 +76,31 @@ class _SuperheroSearchScreenState extends State<SuperheroSearchScreen> with Sing
         child: Column(
           children: [
             AnimatedContainer(
-              duration: const Duration(milliseconds: 400),
+              duration: const Duration(milliseconds: 300),
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
-                color: theme.cardColor,
+                color: theme.colorScheme.surface,
                 borderRadius: BorderRadius.circular(12),
-                boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 8)],
+                boxShadow: [
+                  BoxShadow(color: Colors.black.withAlpha((0.06 * 255).round()), blurRadius: 12, offset: const Offset(0, 6)),
+                ],
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.search),
+                  Icon(Icons.search, color: theme.colorScheme.onSurface.withAlpha((0.6 * 255).round())),
                   const SizedBox(width: 8),
                   Expanded(
                     child: TextField(
                       controller: _controller,
                       onChanged: _search,
-                      decoration: const InputDecoration.collapsed(hintText: 'Rechercher un héros'),
+                      decoration: InputDecoration.collapsed(
+                        hintText: 'Rechercher un héros',
+                        hintStyle: TextStyle(color: theme.colorScheme.onSurface.withAlpha((0.5 * 255).round())),
+                      ),
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.clear),
+                    icon: Icon(Icons.clear, color: theme.colorScheme.onSurface.withAlpha((0.7 * 255).round())),
                     onPressed: () {
                       _controller.clear();
                       _search('');
@@ -124,7 +128,8 @@ class _SuperheroSearchScreenState extends State<SuperheroSearchScreen> with Sing
                               ),
                             ),
                             child: Card(
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+                              elevation: 8,
                               clipBehavior: Clip.antiAlias,
                               child: Stack(
                                 fit: StackFit.expand,
@@ -138,17 +143,31 @@ class _SuperheroSearchScreenState extends State<SuperheroSearchScreen> with Sing
                                       fit: BoxFit.cover,
                                     ),
                                   ),
+                                  // dark overlay gradient bottom for text contrast
                                   Positioned(
-                                    bottom: 12,
-                                    left: 12,
-                                    right: 12,
+                                    bottom: 0,
+                                    left: 0,
+                                    right: 0,
+                                    height: 120,
                                     child: Container(
-                                      padding: const EdgeInsets.all(8),
-                                      decoration: BoxDecoration(
-                                        color: Colors.black45,
-                                        borderRadius: BorderRadius.circular(8),
+                                      decoration: const BoxDecoration(
+                                        gradient: LinearGradient(
+                                          begin: Alignment.bottomCenter,
+                                          end: Alignment.topCenter,
+                                          colors: [Colors.black87, Colors.transparent],
+                                        ),
                                       ),
-                                      child: AutoSizeText(h.name ?? '', style: const TextStyle(color: Colors.white, fontSize: 20)),
+                                    ),
+                                  ),
+                                  Positioned(
+                                    bottom: 16,
+                                    left: 16,
+                                    right: 16,
+                                    child: AutoSizeText(
+                                      h.name ?? '',
+                                      style: const TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),
+                                      maxLines: 1,
+                                      minFontSize: 12,
                                     ),
                                   ),
                                 ],

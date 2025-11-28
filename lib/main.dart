@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:herome/screens/splash_screen.dart';
+import 'package:herome/screens/home_screen.dart';
 import 'package:herome/theme_service.dart';
 
 void main() {
@@ -20,8 +20,7 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
           title: 'HeroMe',
           debugShowCheckedModeBanner: false,
-          theme: ThemeData.from(colorScheme: lightScheme).copyWith(
-            useMaterial3: true,
+          theme: ThemeData.from(colorScheme: lightScheme, useMaterial3: true).copyWith(
             appBarTheme: const AppBarTheme(centerTitle: true, elevation: 0),
             elevatedButtonTheme: ElevatedButtonThemeData(
               style: ElevatedButton.styleFrom(
@@ -31,11 +30,12 @@ class MyApp extends StatelessWidget {
               ),
             ),
           ),
-          darkTheme: ThemeData.from(colorScheme: darkScheme).copyWith(useMaterial3: true),
+          darkTheme: ThemeData.from(colorScheme: darkScheme, useMaterial3: true),
           themeMode: mode,
-          home: const SplashScreen(),
+          home: const HomeScreen(),
         );
       },
     );
   }
 }
+  
